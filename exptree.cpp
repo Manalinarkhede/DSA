@@ -23,7 +23,7 @@ Node* ExpTree (const string& prefix) {
         char ch=prefix[i];
         Node* newNode = new Node(ch);
 
-        if(isaplha(ch)){
+        if(isalpha(ch)){
             s.push(newNode); //push operand till operator
         } else if (isOperator(ch)) {
             newNode->left = s.top(); //operand1 + operand2 + operator 
