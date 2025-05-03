@@ -1,8 +1,4 @@
-# Assignment No: 2  
-# Name: Manali Narkhede - SE-B-34  
-# Title: Create ADT that implements the "Set" concept
 
-# Create initial set
 S1 = set()
 n = int(input("Enter number of elements you want to enter in the set: "))
 print("Enter the elements:")
@@ -34,7 +30,7 @@ if ch == 1:
 
 elif ch == 2:
     ele = int(input("Enter the element you want to remove from set: "))
-    S1.discard(ele)  # Use discard to avoid KeyError if element is not found
+    S1.remove(ele)  
     print("Now elements in the set are:")
     print(S1)
 
