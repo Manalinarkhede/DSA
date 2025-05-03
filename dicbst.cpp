@@ -1,20 +1,20 @@
-#include <iostream>
-#include <cstring>
+#include<iostream>
+#include<cstring>
 using namespace std;
 
 struct Node {
     char key[50];
     char info[100];
     Node *left, *right;
-
-    Node(const char* k, const char* m) {
+    
+    Node( const char* k, const char* m) {
         strcpy(key, k);
         strcpy(info, m);
         left = right = nullptr;
     }
 };
 
-void insert(Node* &root, Node* t) {
+void insert( Node*& root, Node* t) {
     if (root == nullptr) {
         root = t;
     } else {
@@ -22,10 +22,10 @@ void insert(Node* &root, Node* t) {
         int l2 = strlen(t->key);
         int l = min(l1, l2);
         int i = 0;
-        while (i < l && root->key[i] == t->key[i]) {
+        while( i < l && root->key[i] == t->key[i]) {
             i++;
         }
-        if (i < l && root->key[i] > t->key[i]) {
+        if(i < l && root->key[i] > t->key[i]) {
             insert(root->left, t);
         } else {
             insert(root->right, t);
@@ -33,97 +33,103 @@ void insert(Node* &root, Node* t) {
     }
 }
 
-void preorder(Node *temp) {
-    if (temp != nullptr) {
-        cout << temp->key << ": " << temp->info << " ";
+void preorder(Node* temp) {
+    if( temp != nullptr ) {
+        cout << temp->key << ":" << temp->info << " ";
         preorder(temp->left);
         preorder(temp->right);
     }
 }
 
-void postorder(Node *temp) {
-    if (temp != nullptr) {
+void postorder(Node* temp) {
+    if( temp != nullptr ) {
         postorder(temp->left);
         postorder(temp->right);
-        cout << temp->key << ": " << temp->info << " ";
+        cout << temp->key << ":" << temp->info << " ";
     }
 }
 
-void inorder(Node *temp) {
-    if (temp != nullptr) {
+void inorder(Node* temp) {
+    if( temp != nullptr ) {
         inorder(temp->left);
-        cout << temp->key << ": " << temp->info << " ";
+        cout << temp->key << ":" << temp->info << " ";
         inorder(temp->right);
     }
 }
 
-void dorder(Node *temp) {
-    if (temp != nullptr) {
+void dorder(Node* temp) {
+    if( temp != nullptr ) {
         dorder(temp->right);
-        cout << temp->key << ": " << temp->info << " ";
+        cout << temp->key << ":" << temp->info << " ";
         dorder(temp->left);
     }
 }
 
-Node* inorder_Successor(Node* curr) {
-    while (curr->left) {
-        curr = curr->left;
+Node* inorder_successor(Node* temp) {
+    while (temp->left) {
+        temp = temp->left;
     }
-    return curr;
+    return temp;
 }
 
-Node* deleteNode(Node* root, char* k) {
+Node* deleteNode( Node* root, char* t) {
     if (root == nullptr) return nullptr;
 
     int l1 = strlen(root->key);
-    int l2 = strlen(k);
+    int l2 = strlen(t);
     int l = min(l1, l2);
     int i = 0;
-    while (i < l && root->key[i] == k[i]) {
+    while (i < l && root->key[i] == t[i]) {
         i++;
     }
 
-    if (i == l && root->key[i] == k[i]) {
+    if (i == l && root->key[i] == t[i]) {
+        // Node found for deletion
         if (root->left == nullptr && root->right == nullptr) {
             delete root;
             return nullptr;
         }
+
         if (root->left == nullptr) {
             Node* temp = root->right;
             delete root;
             return temp;
         }
+
         if (root->right == nullptr) {
             Node* temp = root->left;
             delete root;
             return temp;
         }
 
-        Node* temp = inorder_Successor(root->right);
+        // Node with two children: get inorder successor
+        Node* temp = inorder_successor(root->right);
         strcpy(root->key, temp->key);
         strcpy(root->info, temp->info);
-        root->right = deleteNode(root->right, temp->key);
-    } else if (i < l && root->key[i] > k[i]) {
-        root->left = deleteNode(root->left, k);
+
+        // Delete the inorder successor
+        root->right = deleteNode(root->right, temp->key);  // Ensure the right subtree is updated after deletion
+    } else if (i < l && root->key[i] > t[i]) {
+        root->left = deleteNode(root->left, t);
     } else {
-        root->right = deleteNode(root->right, k);
+        root->right = deleteNode(root->right, t);
     }
 
     return root;
 }
 
-Node *search(Node *root, char *k) {
+Node *search( Node* root, char *t) {
     while (root != nullptr) {
         int l1 = strlen(root->key);
-        int l2 = strlen(k);
+        int l2 = strlen(t);
         int l = min(l1, l2);
         int i = 0;
-        while (i < l && root->key[i] == k[i]) {
+        while (i < l && root->key[i] == t[i]) {
             i++;
         }
-        if (i == l && root->key[i] == k[i]) {
+        if (i == l && root->key[i] == t[i]) {
             return root;
-        } else if (i < l && root->key[i] > k[i]) {
+        } else if (i == l && root->key[i] > t[i]) {
             root = root->left;
         } else {
             root = root->right;
