@@ -1,112 +1,198 @@
 #include <iostream>
 using namespace std;
 
-class node {
-public:
+struct Node {
     int data;
-    node* left;
-    node* right;
-
-    node(int value) {
+    Node* left;
+    Node* right;
+    
+    Node(int value) {
         data = value;
         left = nullptr;
         right = nullptr;
     }
-
-    void insert(node*& root, node* temp) {
-        if (root == nullptr) {
-            root = temp;
-        } else {
-            node* parent = nullptr;
-            node* current = root;
-
-            while (current != nullptr) {
-                parent = current;
-                if (current->data < temp->data) {
-                    current = current->right;
-                } else {
-                    current = current->left;
-                }
-            }
-
-            if (parent->data < temp->data) {
-                parent->right = temp;
-            } else {
-                parent->left = temp;
-            }
-        }
-    }
-
-    void preorder(node* temp) {
-        if (temp != nullptr) {
-            cout << temp->data << " ";
-            preorder(temp->left);
-            preorder(temp->right);
-        }
-    }
-
-    void postorder(node* temp) {
-        if (temp != nullptr) {
-            postorder(temp->left);
-            postorder(temp->right);
-            cout << temp->data << " ";
-        }
-    }
-
-    void inorder(node* temp) {
-        if (temp != nullptr) {
-            inorder(temp->left);
-            cout << temp->data << " ";
-            inorder(temp->right);
-        }
-    }
-
-    node* search(node* root, int key) {
-        if (root == nullptr) {
-            return nullptr;
-        } else if (key < root->data) {
-            return search(root->left, key);
-        } else if (key > root->data) {
-            return search(root->right, key);
-        } else {
-            return root;
-        }
-    }
 };
 
-int main() {
-    node obj(0); // Dummy object to call member functions
-    node* root = nullptr;
-    int total, value;
-
-    cout << "Enter how many nodes you want to insert? ";
-    cin >> total;
-
-    cout << "Enter the values one by one:" << endl;
-    for (int i = 0; i < total; i++) {
-        cin >> value;
-        node* temp = new node(value);
-        obj.insert(root, temp);
-    }
-
-    cout << "\nInorder: ";
-    obj.inorder(root);
-
-    cout << "\nPreorder: ";
-    obj.preorder(root);
-
-    cout << "\nPostorder: ";
-    obj.postorder(root);
-
-    int key;
-    cout << "\n\nEnter the value you want to search: ";
-    cin >> key;
-    node* result = obj.search(root, key);
-
-    if (result != nullptr) {
-        cout << "Node with value " << key << " found!" << endl;
+// Function to insert a node in the BST
+void insert(Node*& root, Node* temp) {
+    if (root == nullptr) {
+        root = temp;
     } else {
-        cout << "Node with value " << key << " not found." << endl;
+        Node* parent = nullptr;
+        Node* current = root;
+        while (current != nullptr) {
+            parent = current;
+            if (temp->data > current->data)
+                current = current->right;
+            else
+                current = current->left;
+        }
+        if (temp->data > parent->data)
+            parent->right = temp;
+        else
+            parent->left = temp;
+    }
+}
+
+// Preorder traversal
+void preorder(Node* temp) {
+    if (temp != nullptr) {
+        cout << temp->data << " ";
+        preorder(temp->left);
+        preorder(temp->right);
+    }
+}
+
+// Inorder traversal
+void inorder(Node* temp) {
+    if (temp != nullptr) {
+        inorder(temp->left);
+        cout << temp->data << " ";
+        inorder(temp->right);
+    }
+}
+
+// Postorder traversal
+void postorder(Node* temp) {
+    if (temp != nullptr) {
+        postorder(temp->left);
+        postorder(temp->right);
+        cout << temp->data << " ";
+    }
+}
+
+// Search for a value
+Node* search(Node* root, int key) {
+    if (root == nullptr || root->data == key)
+        return root;
+    if (key < root->data)
+        return search(root->left, key);
+    else
+        return search(root->right, key);
+}
+
+// Find the smallest node
+Node* smallest(Node* root) {
+    while (root != nullptr && root->left != nullptr)
+        root = root->left;
+    return root;
+}
+
+// Find the longest path (height)
+int longest_path(Node* root) {
+    if (root == nullptr)
+        return 0;
+    int L = longest_path(root->left);
+    int R = longest_path(root->right);
+    return max(L, R) + 1;
+}
+
+// Swap (mirror) nodes of the tree
+void swapNodes(Node* root) {
+    if (root == nullptr)
+        return;
+    Node* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+
+    swapNodes(root->left);
+    swapNodes(root->right);
+}
+
+int main() {
+    Node* root = nullptr;
+    int choice, num;
+
+    while (true) {
+        cout << "\nBinary Search Tree Menu\n";
+        cout << "1. Insert Node\n";
+        cout << "2. Preorder Traversal\n";
+        cout << "3. Inorder Traversal\n";
+        cout << "4. Postorder Traversal\n";
+        cout << "5. Search Node\n";
+        cout << "6. Smallest\n";
+        cout << "7. Longest path\n";
+        cout << "8. Swapping (Mirror Tree)\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter a number to insert: ";
+                cin >> num;
+                insert(root, new Node(num));
+                cout << "Node inserted\n";
+                break;
+
+            case 2:
+                if (root == nullptr)
+                    cout << "Tree is empty!\n";
+                else {
+                    cout << "Preorder Traversal: ";
+                    preorder(root);
+                    cout << endl;
+                }
+                break;
+
+            case 3:
+                if (root == nullptr)
+                    cout << "Tree is empty!\n";
+                else {
+                    cout << "Inorder Traversal: ";
+                    inorder(root);
+                    cout << endl;
+                }
+                break;
+
+            case 4:
+                if (root == nullptr)
+                    cout << "Tree is empty!\n";
+                else {
+                    cout << "Postorder Traversal: ";
+                    postorder(root);
+                    cout << endl;
+                }
+                break;
+
+            case 5: {
+                cout << "Enter value to search: ";
+                cin >> num;
+                Node* foundNode = search(root, num);
+                if (foundNode)
+                    cout << "Node " << num << " found in the tree.\n";
+                else
+                    cout << "Node " << num << " not found in the tree.\n";
+                break;
+            }
+
+            case 6: {
+                Node* minNode = smallest(root);
+                if (minNode)
+                    cout << "Minimum value in tree is: " << minNode->data << endl;
+                else
+                    cout << "Tree is empty!\n";
+                break;
+            }
+
+            case 7:
+                cout << "Longest path is: " << longest_path(root) << endl;
+                break;
+
+            case 8:
+                swapNodes(root);
+                cout << "Postorder traversal after swapping: ";
+                postorder(root);
+                cout << endl;
+                break;
+
+            case 9:
+                cout << "Exiting program\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
     }
 
     return 0;
