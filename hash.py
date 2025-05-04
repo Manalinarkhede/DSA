@@ -4,22 +4,22 @@ def Hash(value, n):
 def linear_probing(H, index, n):
     i = 1
     while H[index] != 0:
-        new_index = (index + i) % n
-        if H[new_index] == 0:
-            return new_index
+        index = (index + 1) % n
         i += 1
-    return -1  # Hash table is full
+        if i >= n:  
+            return -1
+    return index
 
 def quadratic_probing(H, index, n):
     i = 1
-    while H[index] != 0:
+    while H[index] != 0 and i < n:
         new_index = (index + i**2) % n
         if H[new_index] == 0:
             return new_index
         i += 1
-        if i >= n:
-            return -1  # Table full
-    return index
+    if H[index] == 0:
+        return index
+    return -1  
 
 n = int(input("Enter the total number of clients: "))
 H = [0] * n
@@ -29,7 +29,6 @@ for i in range(n):
     x = int(input(f"Enter the telephone number of client {i+1}: "))
     index = Hash(x, n)
     
-    # Linear Probing
     if H[index] == 0:
         H[index] = x
     else:
@@ -40,8 +39,7 @@ for i in range(n):
             print("Linear probing failed: Table full")
 
     print("Linear:", H)
-    
-    # Quadratic Probing
+
     if H2[index] == 0:
         H2[index] = x
     else:
